@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All-in-One Document Workbench</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --text: #f1f5f9;
+      --accent: #38bdf8;
+      --accent2: #6366f1;
+    }
+
+    body.light {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #020617;
+      --accent: #0ea5e9;
+      --accent2: #2563eb;
+    }
+
+            body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: block; /* allow natural document flow */
+      min-height: 100vh;
+      margin: 0;
+            padding-top: 0; /* spacing handled by header spacer */
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+        .card {
+      backdrop-filter: blur(6px);
+      background: linear-gradient(180deg, rgba(2,6,23,0.95), rgba(2,6,23,0.85));
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 1.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    h1 { margin-bottom: 1rem; font-size: 1.5rem; }
+
+    input[type="file"], input[type="text"] {
+      width: 100%;
+      margin: 0.75rem 0;
+      padding: 0.6rem;
+      border-radius: 0.75rem;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid #334155;
+    }
+
+    button.action {
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #020617;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button.action:hover { transform: translateY(-1px); opacity: 0.95; }
+
+    .hidden { display: none; }
+
+    /* Advertisement + About */
+        .ad-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 230px; /* taller ad banner */ /* slightly taller ad banner */ /* doubled height */
+      z-index: 3000;
+      display: flex;
+      gap: 16px; /* more space between ad banner elements */ /* more breathing room between ad and buttons */
+      padding: 8px 16px;
+      box-sizing: border-box;
+    }
+
+        .ad-large {
+      flex: 1;
+      height: 100%;
+      border: 1px solid var(--accent);
+      border-radius: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      color: #e2e8f0;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      text-transform: uppercase;
+      overflow: hidden;
+      text-decoration: none;
+      background: #020617;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .ad-large:hover {
+      transform: scale(1.02);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.8);
+    }
+
+    .ad-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 1.5rem;
+    }
+
+        .about-btn {
+      height: 100%;
+      padding: 0 1.75rem; /* wider to match taller banner */
+      min-height: 48px;   /* ensure comfortable tap target */
+      border-radius: 1.5rem;
+      border: 1px solid var(--accent);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #020617;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    .about-btn:hover {
+      transform: translateY(-1px) scale(1.05);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      opacity: 0.95;
+    }
+
+    /* Top toolbar */
+                    .toolbar {
+      position: sticky;      /* stays visible but occupies layout space */
+      top: 230px; /* align toolbar below taller ad banner */ /* align toolbar below taller ad banner */           /* sticks just below ad banner */
+      left: 0;
+      width: 100vw;
+      display: flex;
+      row-gap: 18px; /* increased spacing between wrapped rows */ /* slightly wider spacing between wrapped rows */
+      column-gap: 18px; /* increased spacing between toolbar buttons */ /* slightly wider spacing between toolbar buttons */
+      z-index: 2000;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      padding: 12px 16px;   /* gives toolbar its own height in layout */
+      box-sizing: border-box;
+      background: linear-gradient(180deg, rgba(2,6,23,0.85), rgba(2,6,23,0.6));
+      backdrop-filter: blur(6px);
+    }
+
+                .tool-btn {
+      padding: 0.45rem 0.9rem;      /* slightly reduced vertical height */
+      min-height: 36px;            /* compact but still touch-friendly */
+      line-height: 1.2;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #020617;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      flex: 1 1 auto;   /* expand to fill available space */
+      min-width: 140px;
+      text-align: center;
+    }
+
+        .tool-btn:hover { transform: translateY(-2px) scale(1.05); }
+
+        .tool-btn.active {
+      box-shadow: 0 0 0 2px var(--accent), 0 0 30px rgba(56,189,248,0.9);
+      transform: scale(1.08);
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+    }
+
+    .theme-btn {
+      background: linear-gradient(135deg, #14b8a6, #2dd4bf);
+    }
+
+    /* Small screens: horizontal scroll row */
+            /* Small screens: horizontal scroll row */
+    @media (max-width: 600px) {
+      .toolbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        column-gap: 8px;   /* tighter spacing on mobile */
+      }
+
+      .tool-btn {
+        flex: 0 0 auto;
+        min-width: 140px;
+      }
+    }
+
+    footer { font-size: 0.75rem; margin-top: 0.75rem; opacity: 0.7; }
+
+    /* Soft divider under toolbar */
+    .toolbar::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+      opacity: 0.4;
+    }
+
+    /* Card entrance animation */
+    .card {
+      animation: floatIn 0.5s ease;
+    }
+
+    @keyframes floatIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* About modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 4000;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .about-modal {
+      width: 280px;
+      max-height: 70vh;
+      background: var(--card);
+      border-radius: 1.25rem;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transform: translateX(40px) scale(0.95);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      border: 1px solid var(--accent);
+    }
+
+    .modal-overlay.active .about-modal {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+
+    .about-modal h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      text-align: center;
+      color: var(--accent);
+    }
+
+    .about-modal .content {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text);
+      overflow-y: auto;
+    }
+
+    .modal-btn {
+      margin-top: auto;
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #020617;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="ad-banner">
+    <a class="ad-large" href="https://amzn.to/4bBnZkr" target="_blank" rel="noopener noreferrer">
+      <img src="https://m.media-amazon.com/images/G/31/Events/img25/JanART26_8_PM_PC.jpg" alt="Advertisement" />
+    </a>
+    <div style="display:flex; flex-direction:column; gap:12px; height:100%; justify-content:space-between;">
+      <button class="about-btn" id="aboutBtn">About</button>
+      <button class="about-btn theme-btn" id="themeToggleTop">Theme</button>
+    </div>
+  </div>
+
+        <div class="toolbar">
+    <button class="tool-btn" data-page="imagePage">Image to PDF Converter</button>
+    <button class="tool-btn" data-page="mergePage">PDF Merge</button>
+    <button class="tool-btn" data-page="splitPage">PDF Splitter</button>
+    <button class="tool-btn" data-page="formatPage">Image Format Converter</button>
+    <button class="tool-btn" data-page="watermarkPage">Watermark Tool</button>
+    <button class="tool-btn" data-page="pdfToImagePage">PDF to Image Converter</button>
+    <button class="tool-btn" data-page="pageSizePage">Page Size Converter</button>
+    <button class="tool-btn" data-page="cropPage">Image Cropper</button>
+    
+    </div>
+
+  <!-- Spacer to prevent toolbar overlap -->
+  <div id="headerSpacer"></div>
+
+    <div class="card" style="margin: 24px auto 0;">
+
+    <!-- 1. IMAGE TO PDF -->
+        <div id="imagePage">
+      <h1>Image to PDF Converter</h1>
+      <input type="file" id="imageInput" accept="image/*" multiple />
+      <button id="convertBtn" class="action">Download PDF</button>
+      <footer>Convert images into a multi-page PDF</footer>
+    </div>
+
+    <!-- 2. PDF MERGER -->
+        <div id="mergePage" class="hidden">
+      <h1>PDF Merge</h1>
+      <input type="file" id="mergeInput" accept="application/pdf" multiple />
+      <button class="action" id="mergeBtn">Merge & Download</button>
+      <footer>Combine multiple PDFs into one file</footer>
+    </div>
+
+    <!-- 3. PDF SPLITTER -->
+        <div id="splitPage" class="hidden">
+      <h1>PDF Splitter</h1>
+      <input type="file" id="splitInput" accept="application/pdf" />
+      <input type="text" id="splitRange" placeholder="Page range (e.g. 1-3,5)" />
+      <button class="action">Split & Download</button>
+      <footer>Extract pages from a PDF</footer>
+    </div>
+
+            <!-- 4. IMAGE FORMAT CONVERTER -->
+    <div id="formatPage" class="hidden">
+      <h1>Image Format Converter</h1>
+      <input type="file" id="formatInput" accept="image/*" />
+
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button class="action" style="flex:1;">Convert Format</button>
+        <button class="tool-btn" id="formatToWatermark">Watermark →</button>
+      </div>
+
+      <footer>Convert JPG, PNG, WEBP</footer>
+    </div>
+
+    <!-- 5. WATERMARK -->
+        <div id="watermarkPage" class="hidden">
+      <h1>Watermark Tool</h1>
+      <input type="file" id="watermarkInput" accept="image/*" />
+      <input type="text" id="watermarkText" placeholder="Watermark text" />
+      <button class="action">Apply Watermark</button>
+      <footer>Add branding to images</footer>
+    </div>
+
+    <!-- 7. PDF TO IMAGE -->
+        <div id="pdfToImagePage" class="hidden">
+      <h1>PDF to Image Converter</h1>
+      <input type="file" accept="application/pdf" />
+      <button class="action">Extract Images</button>
+      <footer>Export PDF pages as images</footer>
+    </div>
+
+    <!-- 8. PAGE SIZE CONVERTER -->
+        <div id="pageSizePage" class="hidden">
+      <h1>Page Size Converter</h1>
+      <input type="file" accept="application/pdf" />
+      <button class="action">Convert to A4 / Letter</button>
+      <footer>Change PDF page dimensions</footer>
+    </div>
+
+    <!-- 9. IMAGE CROP -->
+        <div id="cropPage" class="hidden">
+      <h1>Image Cropper</h1>
+      <input type="file" accept="image/*" />
+      <button class="action">Crop & Download</button>
+      <footer>Crop and rotate images</footer>
+    </div>
+
+  </div>
+
+  <!-- ABOUT MODAL -->
+  <div id="aboutOverlay" class="modal-overlay">
+    <div class="about-modal">
+      <h2>About This Tool</h2>
+      <div class="content">
+        <p><strong>All-in-One Document Workbench</strong> is a privacy-first, browser-based toolkit for working with images and PDFs.</p>
+        <p><strong>Features:</strong></p>
+        <p>• Image → PDF converter<br>
+           • PDF merge and split tools<br>
+           • Image format conversion<br>
+           • Watermarking<br>
+           • PDF → Image export<br>
+           • Page size conversion<br>
+           • Image cropper</p>
+        <p><strong>Created by:</strong> Aniket Singh</p>
+        <p>Your files never leave your device. Everything runs locally in your browser.</p>
+      </div>
+      <button class="modal-btn" id="closeAbout">Close</button>
+    </div>
+  </div>
+
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+      const adBanner = document.querySelector(".ad-banner");
+      const toolbar = document.querySelector(".toolbar");
+      const headerSpacer = document.getElementById("headerSpacer");
+
+      function updateHeaderSpacer() {
+        const adHeight = adBanner.offsetHeight;
+        const toolbarHeight = toolbar.offsetHeight;
+        headerSpacer.style.height = (adHeight + toolbarHeight + 16) + "px";
+      }
+
+      window.addEventListener("resize", updateHeaderSpacer);
+      updateHeaderSpacer();
+
+      const pages = document.querySelectorAll(".card > div");
+      const buttons = document.querySelectorAll(".tool-btn[data-page]");
+
+            function showPage(id) {
+        pages.forEach(p => p.classList.add("hidden"));
+        const target = document.getElementById(id);
+        if (target) target.classList.remove("hidden");
+
+        // Active button highlight
+        buttons.forEach(b => b.classList.remove("active"));
+        const activeBtn = document.querySelector(`.tool-btn[data-page="${id}"]`);
+        if (activeBtn) activeBtn.classList.add("active");
+      }
+
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          showPage(btn.dataset.page);
+        });
+      });
+
+      // Default page
+      showPage("imagePage");
+
+            // Theme toggle (top banner button)
+      const themeToggle = document.getElementById("themeToggleTop");
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("light");
+      });
+
+      // ABOUT
+      const aboutBtn = document.getElementById("aboutBtn");
+      const aboutOverlay = document.getElementById("aboutOverlay");
+      const closeAbout = document.getElementById("closeAbout");
+
+      aboutBtn.addEventListener("click", () => {
+        aboutOverlay.classList.add("active");
+      });
+
+      closeAbout.addEventListener("click", () => {
+        aboutOverlay.classList.remove("active");
+      });
+
+      aboutOverlay.addEventListener("click", (e) => {
+        if (e.target === aboutOverlay) {
+          aboutOverlay.classList.remove("active");
+        }
+      });
+
+      // Quick link: Format → Watermark
+      const formatToWatermark = document.getElementById("formatToWatermark");
+      if (formatToWatermark) {
+        formatToWatermark.addEventListener("click", () => {
+          showPage("watermarkPage");
+        });
+      }
+
+      // TEST CASES
+      // 1. Toolbar switches between all pages
+      // 2. Theme button toggles light/dark mode
+      // 3. Image → PDF button responds
+      // 4. Merge page accepts multiple PDFs
+      // 5. Split page accepts range input
+
+    });
+  </script>
+
+</body>
+</html>
