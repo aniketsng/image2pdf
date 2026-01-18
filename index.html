@@ -21,20 +21,19 @@
       --accent2: #2563eb;
     }
 
-            body {
+    body {
       font-family: Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      display: block; /* allow natural document flow */
+      display: block;
       min-height: 100vh;
       margin: 0;
-            padding-top: 0; /* spacing handled by header spacer */
+      padding-top: 0;
       transition: background 0.3s ease, color 0.3s ease;
     }
 
-        .card {
+    .card {
       backdrop-filter: blur(6px);
-      background: linear-gradient(180deg, rgba(2,6,23,0.95), rgba(2,6,23,0.85));
       background: var(--card);
       padding: 2rem;
       border-radius: 1.5rem;
@@ -42,6 +41,7 @@
       max-width: 440px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
       text-align: center;
+      animation: floatIn 0.5s ease;
     }
 
     h1 { margin-bottom: 1rem; font-size: 1.5rem; }
@@ -75,20 +75,20 @@
     .hidden { display: none; }
 
     /* Advertisement + About */
-        .ad-banner {
+    .ad-banner {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 230px; /* taller ad banner */ /* slightly taller ad banner */ /* doubled height */
+      height: 230px;
       z-index: 3000;
       display: flex;
-      gap: 16px; /* more space between ad banner elements */ /* more breathing room between ad and buttons */
+      gap: 16px;
       padding: 8px 16px;
       box-sizing: border-box;
     }
 
-        .ad-large {
+    .ad-large {
       flex: 1;
       height: 100%;
       border: 1px solid var(--accent);
@@ -118,12 +118,14 @@
       height: 100%;
       object-fit: cover;
       border-radius: 1.5rem;
+      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+      will-change: opacity, transform;
     }
 
-        .about-btn {
+    .about-btn {
       height: 100%;
-      padding: 0 1.75rem; /* wider to match taller banner */
-      min-height: 48px;   /* ensure comfortable tap target */
+      padding: 0 1.75rem;
+      min-height: 48px;
       border-radius: 1.5rem;
       border: 1px solid var(--accent);
       background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -141,26 +143,26 @@
     }
 
     /* Top toolbar */
-                    .toolbar {
-      position: sticky;      /* stays visible but occupies layout space */
-      top: 230px; /* align toolbar below taller ad banner */ /* align toolbar below taller ad banner */           /* sticks just below ad banner */
+    .toolbar {
+      position: sticky;
+      top: 230px;
       left: 0;
       width: 100vw;
       display: flex;
-      row-gap: 18px; /* increased spacing between wrapped rows */ /* slightly wider spacing between wrapped rows */
-      column-gap: 18px; /* increased spacing between toolbar buttons */ /* slightly wider spacing between toolbar buttons */
+      row-gap: 18px;
+      column-gap: 18px;
       z-index: 2000;
       flex-wrap: wrap;
       justify-content: flex-start;
-      padding: 12px 16px;   /* gives toolbar its own height in layout */
+      padding: 12px 16px;
       box-sizing: border-box;
       background: linear-gradient(180deg, rgba(2,6,23,0.85), rgba(2,6,23,0.6));
       backdrop-filter: blur(6px);
     }
 
-                .tool-btn {
-      padding: 0.45rem 0.9rem;      /* slightly reduced vertical height */
-      min-height: 36px;            /* compact but still touch-friendly */
+    .tool-btn {
+      padding: 0.45rem 0.9rem;
+      min-height: 36px;
       line-height: 1.2;
       border-radius: 999px;
       border: none;
@@ -170,14 +172,14 @@
       color: #020617;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      flex: 1 1 auto;   /* expand to fill available space */
+      flex: 1 1 auto;
       min-width: 140px;
       text-align: center;
     }
 
-        .tool-btn:hover { transform: translateY(-2px) scale(1.05); }
+    .tool-btn:hover { transform: translateY(-2px) scale(1.05); }
 
-        .tool-btn.active {
+    .tool-btn.active {
       box-shadow: 0 0 0 2px var(--accent), 0 0 30px rgba(56,189,248,0.9);
       transform: scale(1.08);
       background: linear-gradient(135deg, var(--accent2), var(--accent));
@@ -187,14 +189,51 @@
       background: linear-gradient(135deg, #14b8a6, #2dd4bf);
     }
 
-    /* Small screens: horizontal scroll row */
-            /* Small screens: horizontal scroll row */
     @media (max-width: 600px) {
+      /* Stack ad and controls vertically on phones */
+      .ad-banner {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .ad-large {
+        height: 140px;
+      }
+
+      .ad-banner > div {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .about-btn {
+        flex: 1;
+        min-height: 44px;
+      }
+
+      /* Toolbar becomes horizontal scroll strip */
       .toolbar {
+        position: sticky;
+        top: auto;
         flex-wrap: nowrap;
         overflow-x: auto;
-        column-gap: 8px;   /* tighter spacing on mobile */
+        column-gap: 10px;
+        padding: 10px 12px;
       }
+
+      .tool-btn {
+        flex: 0 0 auto;
+        min-width: 140px;
+      }
+
+      /* Card spacing for small screens */
+      .card {
+        margin: 16px auto 24px;
+        max-width: 94vw;
+        padding: 1.5rem;
+      }
+    }
 
       .tool-btn {
         flex: 0 0 auto;
@@ -204,7 +243,6 @@
 
     footer { font-size: 0.75rem; margin-top: 0.75rem; opacity: 0.7; }
 
-    /* Soft divider under toolbar */
     .toolbar::after {
       content: "";
       position: absolute;
@@ -214,11 +252,6 @@
       height: 1px;
       background: linear-gradient(to right, transparent, var(--accent), transparent);
       opacity: 0.4;
-    }
-
-    /* Card entrance animation */
-    .card {
-      animation: floatIn 0.5s ease;
     }
 
     @keyframes floatIn {
@@ -289,9 +322,9 @@
 </head>
 <body>
 
-    <div class="ad-banner">
-    <a class="ad-large" href="https://amzn.to/4bBnZkr" target="_blank" rel="noopener noreferrer">
-      <img src="https://m.media-amazon.com/images/G/31/Events/img25/JanART26_8_PM_PC.jpg" alt="Advertisement" />
+  <div class="ad-banner">
+    <a class="ad-large" id="adLink" href="https://amzn.to/4bBnZkr" target="_blank" rel="noopener noreferrer">
+      <img id="adImage" src="https://m.media-amazon.com/images/G/31/Events/img25/JanART26_8_PM_PC.jpg" alt="Advertisement" />
     </a>
     <div style="display:flex; flex-direction:column; gap:12px; height:100%; justify-content:space-between;">
       <button class="about-btn" id="aboutBtn">About</button>
@@ -299,7 +332,7 @@
     </div>
   </div>
 
-        <div class="toolbar">
+  <div class="toolbar">
     <button class="tool-btn" data-page="imagePage">Image to PDF Converter</button>
     <button class="tool-btn" data-page="mergePage">PDF Merge</button>
     <button class="tool-btn" data-page="splitPage">PDF Splitter</button>
@@ -308,32 +341,27 @@
     <button class="tool-btn" data-page="pdfToImagePage">PDF to Image Converter</button>
     <button class="tool-btn" data-page="pageSizePage">Page Size Converter</button>
     <button class="tool-btn" data-page="cropPage">Image Cropper</button>
-    
-    </div>
+  </div>
 
-  <!-- Spacer to prevent toolbar overlap -->
   <div id="headerSpacer"></div>
 
-    <div class="card" style="margin: 24px auto 0;">
+  <div class="card" style="margin: 24px auto 0;">
 
-    <!-- 1. IMAGE TO PDF -->
-        <div id="imagePage">
+    <div id="imagePage">
       <h1>Image to PDF Converter</h1>
       <input type="file" id="imageInput" accept="image/*" multiple />
       <button id="convertBtn" class="action">Download PDF</button>
       <footer>Convert images into a multi-page PDF</footer>
     </div>
 
-    <!-- 2. PDF MERGER -->
-        <div id="mergePage" class="hidden">
+    <div id="mergePage" class="hidden">
       <h1>PDF Merge</h1>
       <input type="file" id="mergeInput" accept="application/pdf" multiple />
       <button class="action" id="mergeBtn">Merge & Download</button>
       <footer>Combine multiple PDFs into one file</footer>
     </div>
 
-    <!-- 3. PDF SPLITTER -->
-        <div id="splitPage" class="hidden">
+    <div id="splitPage" class="hidden">
       <h1>PDF Splitter</h1>
       <input type="file" id="splitInput" accept="application/pdf" />
       <input type="text" id="splitRange" placeholder="Page range (e.g. 1-3,5)" />
@@ -341,21 +369,17 @@
       <footer>Extract pages from a PDF</footer>
     </div>
 
-            <!-- 4. IMAGE FORMAT CONVERTER -->
     <div id="formatPage" class="hidden">
       <h1>Image Format Converter</h1>
       <input type="file" id="formatInput" accept="image/*" />
-
       <div style="display:flex; gap:8px; align-items:center;">
         <button class="action" style="flex:1;">Convert Format</button>
         <button class="tool-btn" id="formatToWatermark">Watermark →</button>
       </div>
-
       <footer>Convert JPG, PNG, WEBP</footer>
     </div>
 
-    <!-- 5. WATERMARK -->
-        <div id="watermarkPage" class="hidden">
+    <div id="watermarkPage" class="hidden">
       <h1>Watermark Tool</h1>
       <input type="file" id="watermarkInput" accept="image/*" />
       <input type="text" id="watermarkText" placeholder="Watermark text" />
@@ -363,24 +387,21 @@
       <footer>Add branding to images</footer>
     </div>
 
-    <!-- 7. PDF TO IMAGE -->
-        <div id="pdfToImagePage" class="hidden">
+    <div id="pdfToImagePage" class="hidden">
       <h1>PDF to Image Converter</h1>
       <input type="file" accept="application/pdf" />
       <button class="action">Extract Images</button>
       <footer>Export PDF pages as images</footer>
     </div>
 
-    <!-- 8. PAGE SIZE CONVERTER -->
-        <div id="pageSizePage" class="hidden">
+    <div id="pageSizePage" class="hidden">
       <h1>Page Size Converter</h1>
       <input type="file" accept="application/pdf" />
       <button class="action">Convert to A4 / Letter</button>
       <footer>Change PDF page dimensions</footer>
     </div>
 
-    <!-- 9. IMAGE CROP -->
-        <div id="cropPage" class="hidden">
+    <div id="cropPage" class="hidden">
       <h1>Image Cropper</h1>
       <input type="file" accept="image/*" />
       <button class="action">Crop & Download</button>
@@ -389,7 +410,6 @@
 
   </div>
 
-  <!-- ABOUT MODAL -->
   <div id="aboutOverlay" class="modal-overlay">
     <div class="about-modal">
       <h2>About This Tool</h2>
@@ -411,16 +431,49 @@
   </div>
 
   <script>
-        document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // AD ROTATION SETUP
+      const ads = [
+        { img: "https://m.media-amazon.com/images/G/31/Events/img25/JanART26_8_PM_PC.jpg", link: "https://amzn.to/4bBnZkr" },
+        { img: "https://images-eu.ssl-images-amazon.com/images/G/31/glp/bigbets/Laptops-Category-Hero_Asin-PC_Day-1-onwards._CB773336744_.jpg", link: "https://amzn.to/4sRf052" },
+        { img: "https://images-eu.ssl-images-amazon.com/images/G/31/WLA/18/GW/D374469778_IN_WLA_Janart26-GW_PC_3000x1200._CB773454086_.jpg", link: "https://amzn.to/49Zcu53" },
+        { img: "https://images-eu.ssl-images-amazon.com/images/G/31/img26/Beauty/GW/846._CB773416258_.jpg", link: "https://amzn.to/49CZFw4" },
+        { img: "https://images-eu.ssl-images-amazon.com/images/G/31/img22/headphonesD1/GW/Bestselling-headphones_Audio_GW_3000x1200_Day-1._CB773357231_.jpg", link: "https://amzn.to/3LNpi5r" }
+      ];
+
+      const adImage = document.getElementById("adImage");
+      const adLink = document.getElementById("adLink");
+      let adIndex = 0;
+
+      function rotateAd() {
+        adIndex = (adIndex + 1) % ads.length;
+
+        adImage.style.opacity = 0;
+        adImage.style.transform = "scale(1.05)";
+
+        setTimeout(() => {
+          adImage.src = ads[adIndex].img;
+          adLink.href = ads[adIndex].link;
+
+          requestAnimationFrame(() => {
+            adImage.style.opacity = 1;
+            adImage.style.transform = "scale(1)";
+          });
+        }, 500);
+      }
+
+      setInterval(rotateAd, 6000);
 
       const adBanner = document.querySelector(".ad-banner");
       const toolbar = document.querySelector(".toolbar");
       const headerSpacer = document.getElementById("headerSpacer");
 
-      function updateHeaderSpacer() {
+            function updateHeaderSpacer() {
         const adHeight = adBanner.offsetHeight;
         const toolbarHeight = toolbar.offsetHeight;
-        headerSpacer.style.height = (adHeight + toolbarHeight + 16) + "px";
+        const safeGap = window.innerWidth <= 600 ? 12 : 16;
+        headerSpacer.style.height = (adHeight + toolbarHeight + safeGap) + "px";
       }
 
       window.addEventListener("resize", updateHeaderSpacer);
@@ -429,12 +482,11 @@
       const pages = document.querySelectorAll(".card > div");
       const buttons = document.querySelectorAll(".tool-btn[data-page]");
 
-            function showPage(id) {
+      function showPage(id) {
         pages.forEach(p => p.classList.add("hidden"));
         const target = document.getElementById(id);
         if (target) target.classList.remove("hidden");
 
-        // Active button highlight
         buttons.forEach(b => b.classList.remove("active"));
         const activeBtn = document.querySelector(`.tool-btn[data-page="${id}"]`);
         if (activeBtn) activeBtn.classList.add("active");
@@ -446,16 +498,13 @@
         });
       });
 
-      // Default page
       showPage("imagePage");
 
-            // Theme toggle (top banner button)
       const themeToggle = document.getElementById("themeToggleTop");
       themeToggle.addEventListener("click", () => {
         document.body.classList.toggle("light");
       });
 
-      // ABOUT
       const aboutBtn = document.getElementById("aboutBtn");
       const aboutOverlay = document.getElementById("aboutOverlay");
       const closeAbout = document.getElementById("closeAbout");
@@ -474,7 +523,6 @@
         }
       });
 
-      // Quick link: Format → Watermark
       const formatToWatermark = document.getElementById("formatToWatermark");
       if (formatToWatermark) {
         formatToWatermark.addEventListener("click", () => {
